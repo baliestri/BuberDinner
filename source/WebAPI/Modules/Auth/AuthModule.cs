@@ -1,6 +1,8 @@
 // Copyright (c) Bruno Sales <me@baliestri.dev>. Licensed under the MIT License.
 // See the LICENSE file in the repository root for full license text.
 
+using BuberDinner.Application.Interfaces.Services.Auth;
+using BuberDinner.Application.Results.Auth;
 using BuberDinner.Contracts.Requests.Auth;
 using BuberDinner.Contracts.Responses.Auth;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +21,26 @@ public class AuthModule : ModuleBase {
 
   private IResult CreateUserHandler(
     HttpContext ctx,
-    [FromBody] CreateUserRequest body
-  ) => Results.Created(
-    ctx.Request.Path,
-    new SuccessfulAuthResponse(Guid.NewGuid(), body.FirstName, body.LastName, body.Email, "token")
-  );
+    [FromBody] CreateUserRequest body,
+    [FromServices] IAuthService authService
+  ) {
+    (string firstName, string lastName, string email, string password) = body;
 
-  private IResult SignInUserHandler([FromBody] SignInUserRequest body)
-    => Results.Ok(new SuccessfulAuthResponse(Guid.NewGuid(), "firstName", "lastName", body.Email, "token"));
+    SuccessfulAuthResult result = authService.Create(firstName, lastName, email, password);
+    SuccessfulAuthResponse response = new(result.Id, firstName, lastName, email, result.Token);
+
+    return Results.Created(ctx.Request.Path.ToUriComponent(), response);
+  }
+
+  private IResult SignInUserHandler(
+    [FromBody] SignInUserRequest body,
+    [FromServices] IAuthService authService
+  ) {
+    (string email, string password) = body;
+
+    SuccessfulAuthResult result = authService.SignIn(email, password);
+    SuccessfulAuthResponse response = new(result.Id, result.FirstName, result.LastName, email, result.Token);
+
+    return Results.Ok(response);
+  }
 }
