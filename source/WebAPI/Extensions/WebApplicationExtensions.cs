@@ -2,6 +2,7 @@
 // See the LICENSE file in the repository root for full license text.
 
 using System.Reflection;
+using BuberDinner.Application;
 using BuberDinner.WebAPI.Modules;
 using Microsoft.OpenApi.Models;
 
@@ -63,7 +64,8 @@ internal static class WebApplicationExtensions {
           securityScheme
         );
         options.AddSecurityRequirement(securityRequirement);
-      });
+      })
+      .AddApplicationServiceCollection();
     serviceCollection.AddModuleServices();
 
     return builder;
