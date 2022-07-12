@@ -3,6 +3,7 @@
 
 using System.Reflection;
 using BuberDinner.Application;
+using BuberDinner.Infrastructure;
 using BuberDinner.WebAPI.Modules;
 using Microsoft.OpenApi.Models;
 
@@ -65,7 +66,8 @@ internal static class WebApplicationExtensions {
         );
         options.AddSecurityRequirement(securityRequirement);
       })
-      .AddApplicationServiceCollection();
+      .AddApplicationServiceCollection()
+      .AddInfrastructureServiceCollection();
     serviceCollection.AddModuleServices();
 
     return builder;
