@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,6 +7,7 @@
     <TargetName>WebAPI</TargetName>
     <RootNamespace>BuberDinner.WebAPI</RootNamespace>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <UserSecretsId>7ef341cc-5e95-4162-9ff7-7550d7a18782</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
