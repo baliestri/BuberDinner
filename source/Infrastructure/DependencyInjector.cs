@@ -2,8 +2,10 @@
 // See the LICENSE file in the repository root for full license text.
 
 using BuberDinner.Application.Interfaces.Providers;
+using BuberDinner.Application.Interfaces.Repositories;
 using BuberDinner.Infrastructure.Common.Settings;
 using BuberDinner.Infrastructure.Providers;
+using BuberDinner.Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +20,8 @@ public static class DependencyInjector {
 
     serviceCollection.AddSingleton<IDateTimeProvider, DateTimeProvider>();
     serviceCollection.AddSingleton<IJwtTokenProvider, JwtTokenProvider>();
+
+    serviceCollection.AddScoped<IUserRepository, UserRepository>();
 
     return serviceCollection;
   }
