@@ -30,6 +30,7 @@ internal static class WebApplicationExtensions {
 
   public static WebApplication RegisterPipelines(this WebApplication application) {
     application
+      .UseExceptionHandler("/api/error")
       .UseSwagger()
       .UseSwaggerUI(options
         => options.SwaggerEndpoint("/swagger/v1/swagger.json", "BuberDinner v1"))
