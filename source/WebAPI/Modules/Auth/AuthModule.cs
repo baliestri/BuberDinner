@@ -5,7 +5,6 @@ using BuberDinner.Application.Interfaces.Services.Auth;
 using BuberDinner.Application.Results.Auth;
 using BuberDinner.Contracts.Requests.Auth;
 using BuberDinner.Contracts.Responses.Auth;
-using Microsoft.AspNetCore.Mvc;
 
 namespace BuberDinner.WebAPI.Modules.Auth;
 
@@ -20,21 +19,21 @@ public class AuthModule : ModuleBase {
   }
 
   private IResult CreateUserHandler(
-    HttpContext ctx,
-    [FromBody] CreateUserRequest body,
-    [FromServices] IAuthService authService
+    HttpRequest request,
+    CreateUserRequest body,
+    IAuthService authService
   ) {
     (string firstName, string lastName, string email, string password) = body;
 
     SuccessfulAuthResult result = authService.Create(firstName, lastName, email, password);
     SuccessfulAuthResponse response = new(result.Id, firstName, lastName, email, result.Token);
 
-    return Results.Created(ctx.Request.Path.ToUriComponent(), response);
+    return Results.Created(request.Path.ToUriComponent(), response);
   }
 
   private IResult SignInUserHandler(
-    [FromBody] SignInUserRequest body,
-    [FromServices] IAuthService authService
+    SignInUserRequest body,
+    IAuthService authService
   ) {
     (string email, string password) = body;
 
