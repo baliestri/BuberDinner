@@ -5,6 +5,7 @@ using System.Reflection;
 using BuberDinner.Application;
 using BuberDinner.Infrastructure;
 using BuberDinner.WebAPI.Modules;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.OpenApi.Models;
 
 namespace BuberDinner.WebAPI.Extensions;
@@ -37,6 +38,15 @@ internal static class WebApplicationExtensions {
       .UseHttpsRedirection()
       .UseAuthorization();
     application.UseModuleEndpoints();
+    application.Map("/api/error", (HttpContext ctx) => {
+      Exception? exception = ctx.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+      (int statusCode, string message) = exception switch {
+        _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
+      };
+
+      return Results.Problem(message, statusCode: statusCode);
+    });
 
     return application;
   }

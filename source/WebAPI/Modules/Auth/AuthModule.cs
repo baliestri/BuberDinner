@@ -11,14 +11,16 @@ namespace BuberDinner.WebAPI.Modules.Auth;
 public class AuthModule : ModuleBase {
   public override IEndpointRouteBuilder MapRouteEndpoints(IEndpointRouteBuilder endpoint) {
     endpoint.MapPost("/api/user/create", CreateUserHandler)
-      .Produces<SuccessfulAuthResponse>(StatusCodes.Status201Created);
+      .Produces<SuccessfulAuthResponse>(StatusCodes.Status201Created)
+      .ProducesProblem(StatusCodes.Status400BadRequest);
     endpoint.MapPost("/api/user/auth", SignInUserHandler)
-      .Produces<SuccessfulAuthResponse>();
+      .Produces<SuccessfulAuthResponse>()
+      .ProducesProblem(StatusCodes.Status400BadRequest);
 
     return endpoint;
   }
 
-  private IResult CreateUserHandler(
+  private static IResult CreateUserHandler(
     HttpRequest request,
     CreateUserRequest body,
     IAuthService authService
@@ -31,7 +33,7 @@ public class AuthModule : ModuleBase {
     return Results.Created(request.Path.ToUriComponent(), response);
   }
 
-  private IResult SignInUserHandler(
+  private static IResult SignInUserHandler(
     SignInUserRequest body,
     IAuthService authService
   ) {
