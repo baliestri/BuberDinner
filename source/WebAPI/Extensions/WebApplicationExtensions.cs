@@ -41,6 +41,7 @@ internal static class WebApplicationExtensions {
   }
 
   public static WebApplicationBuilder RegisterComponents(this WebApplicationBuilder builder) {
+    IConfiguration configuration = builder.Configuration;
     IServiceCollection serviceCollection = builder.Services;
 
     serviceCollection
@@ -67,7 +68,7 @@ internal static class WebApplicationExtensions {
         options.AddSecurityRequirement(securityRequirement);
       })
       .AddApplicationServiceCollection()
-      .AddInfrastructureServiceCollection();
+      .AddInfrastructureServiceCollection(configuration);
     serviceCollection.AddModuleServices();
 
     return builder;
