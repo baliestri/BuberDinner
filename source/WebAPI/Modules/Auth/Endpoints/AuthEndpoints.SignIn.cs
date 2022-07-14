@@ -1,21 +1,23 @@
 // Copyright (c) Bruno Sales <me@baliestri.dev>. Licensed under the MIT License.
 // See the LICENSE file in the repository root for full license text.
 
-using BuberDinner.Application.Services.Auth.Queries;
-using BuberDinner.Application.Services.Common.Results;
+using BuberDinner.Application.Common.Results;
+using BuberDinner.Application.Queries.Auth;
 using BuberDinner.Contracts.Requests.Auth;
 using ErrorOr;
+using MediatR;
 
 namespace BuberDinner.WebAPI.Modules.Auth.Endpoints;
 
 public static partial class AuthEndpoints {
-  public static IResult SignIn(
+  public static async Task<IResult> SignIn(
     SignInUserRequest body,
-    IAuthQueryService authQueryService
+    ISender mediator
   ) {
     (string email, string password) = body;
+    SignInQuery query = new(email, password);
 
-    ErrorOr<SuccessfulAuthResult> resultOrError = authQueryService.SignIn(email, password);
+    ErrorOr<SuccessfulAuthResult> resultOrError = await mediator.Send(query);
 
     return resultOrError.Match(
       auth => Results.Ok(GenerateAuthResponse(auth)),
