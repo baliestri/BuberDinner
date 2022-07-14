@@ -1,7 +1,7 @@
 // Copyright (c) Bruno Sales <me@baliestri.dev>. Licensed under the MIT License.
 // See the LICENSE file in the repository root for full license text.
 
-using BuberDinner.Application.Common.Results.Auth;
+using BuberDinner.Application.Services.Common.Results;
 using BuberDinner.Contracts.Responses.Auth;
 
 namespace BuberDinner.WebAPI.Modules.Auth.Endpoints;
