@@ -1,10 +1,10 @@
 // Copyright (c) Bruno Sales <me@baliestri.dev>. Licensed under the MIT License.
 // See the LICENSE file in the repository root for full license text.
 
-using BuberDinner.Application.Interfaces.Repositories;
+using BuberDinner.Application.Persistence;
 using BuberDinner.Core.Entities;
 
-namespace BuberDinner.Infrastructure.Repositories;
+namespace BuberDinner.Infrastructure.Persistence;
 
 public class UserRepository : IUserRepository {
   private static readonly List<User> _users = new();

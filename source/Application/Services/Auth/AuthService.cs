@@ -1,10 +1,9 @@
 // Copyright (c) Bruno Sales <me@baliestri.dev>. Licensed under the MIT License.
 // See the LICENSE file in the repository root for full license text.
 
-using BuberDinner.Application.Interfaces.Providers;
-using BuberDinner.Application.Interfaces.Repositories;
-using BuberDinner.Application.Interfaces.Services.Auth;
-using BuberDinner.Application.Results.Auth;
+using BuberDinner.Application.Common.Results.Auth;
+using BuberDinner.Application.Persistence;
+using BuberDinner.Application.Providers;
 using BuberDinner.Core.Common.Errors;
 using BuberDinner.Core.Entities;
 using ErrorOr;

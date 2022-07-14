@@ -1,11 +1,11 @@
 // Copyright (c) Bruno Sales <me@baliestri.dev>. Licensed under the MIT License.
 // See the LICENSE file in the repository root for full license text.
 
-using BuberDinner.Application.Interfaces.Providers;
-using BuberDinner.Application.Interfaces.Repositories;
+using BuberDinner.Application.Persistence;
+using BuberDinner.Application.Providers;
 using BuberDinner.Infrastructure.Common.Settings;
+using BuberDinner.Infrastructure.Persistence;
 using BuberDinner.Infrastructure.Providers;
-using BuberDinner.Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

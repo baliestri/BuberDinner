@@ -3,7 +3,7 @@
 
 using BuberDinner.Core.Entities;
 
-namespace BuberDinner.Application.Interfaces.Repositories;
+namespace BuberDinner.Application.Persistence;
 
 public interface IUserRepository {
   void Add(User user);
