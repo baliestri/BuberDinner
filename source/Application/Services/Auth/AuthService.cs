@@ -5,7 +5,9 @@ using BuberDinner.Application.Interfaces.Providers;
 using BuberDinner.Application.Interfaces.Repositories;
 using BuberDinner.Application.Interfaces.Services.Auth;
 using BuberDinner.Application.Results.Auth;
+using BuberDinner.Core.Common.Errors;
 using BuberDinner.Core.Entities;
+using ErrorOr;
 
 namespace BuberDinner.Application.Services.Auth;
 
@@ -18,9 +20,9 @@ public class AuthService : IAuthService {
     _userRepository = userRepository;
   }
 
-  public SuccessfulAuthResult Create(string firstName, string lastName, string email, string password) {
+  public ErrorOr<SuccessfulAuthResult> Create(string firstName, string lastName, string email, string password) {
     if (_userRepository.GetUserByEmail(email) is not null) {
-      throw new Exception("An user with the provided email already exists");
+      return Errors.Authentication.EmailAlreadyExists;
     }
 
     User user = new() { Email = email, FirstName = firstName, LastName = lastName, Password = password };
@@ -30,13 +32,13 @@ public class AuthService : IAuthService {
     return new SuccessfulAuthResult(user.Id, firstName, lastName, email, token);
   }
 
-  public SuccessfulAuthResult SignIn(string email, string password) {
-    if (_userRepository.GetUserByEmail(email) is not User user) {
-      throw new Exception("An user with the provided email was not found");
+  public ErrorOr<SuccessfulAuthResult> SignIn(string email, string password) {
+    if (_userRepository.GetUserByEmail(email) is not { } user) {
+      return Errors.Authentication.InvalidCredentials;
     }
 
     if (user.Password != password) {
-      throw new Exception("The provided password does not match");
+      return Errors.Authentication.InvalidCredentials;
     }
 
     string token = _jwtToken.Generate(user.Id, user.FirstName, user.LastName);

@@ -5,6 +5,7 @@ using BuberDinner.Application.Interfaces.Services.Auth;
 using BuberDinner.Application.Results.Auth;
 using BuberDinner.Contracts.Requests.Auth;
 using BuberDinner.Contracts.Responses.Auth;
+using ErrorOr;
 
 namespace BuberDinner.WebAPI.Modules.Auth;
 
@@ -12,10 +13,10 @@ public class AuthModule : ModuleBase {
   public override IEndpointRouteBuilder MapRouteEndpoints(IEndpointRouteBuilder endpoint) {
     endpoint.MapPost("/api/user/create", CreateUserHandler)
       .Produces<SuccessfulAuthResponse>(StatusCodes.Status201Created)
-      .ProducesProblem(StatusCodes.Status400BadRequest);
+      .ProducesProblem(StatusCodes.Status409Conflict);
     endpoint.MapPost("/api/user/auth", SignInUserHandler)
       .Produces<SuccessfulAuthResponse>()
-      .ProducesProblem(StatusCodes.Status400BadRequest);
+      .ProducesProblem(StatusCodes.Status409Conflict);
 
     return endpoint;
   }
@@ -27,10 +28,19 @@ public class AuthModule : ModuleBase {
   ) {
     (string firstName, string lastName, string email, string password) = body;
 
-    SuccessfulAuthResult result = authService.Create(firstName, lastName, email, password);
-    SuccessfulAuthResponse response = new(result.Id, firstName, lastName, email, result.Token);
+    ErrorOr<SuccessfulAuthResult> resultOrError = authService.Create(firstName, lastName, email, password);
 
-    return Results.Created(request.Path.ToUriComponent(), response);
+    return resultOrError.MatchFirst(
+      auth => Results.Created(request.Path.ToUriComponent(), AuthResponse(auth)),
+      error => Results.Problem(error.Description, statusCode: StatusCodes.Status409Conflict)
+    );
+
+    SuccessfulAuthResponse AuthResponse(SuccessfulAuthResult authResult) {
+      return new SuccessfulAuthResponse(
+        authResult.Id, authResult.FirstName, authResult.LastName,
+        authResult.Email, authResult.Token
+      );
+    }
   }
 
   private static IResult SignInUserHandler(
@@ -39,9 +49,19 @@ public class AuthModule : ModuleBase {
   ) {
     (string email, string password) = body;
 
-    SuccessfulAuthResult result = authService.SignIn(email, password);
-    SuccessfulAuthResponse response = new(result.Id, result.FirstName, result.LastName, email, result.Token);
+    ErrorOr<SuccessfulAuthResult> resultOrError = authService.SignIn(email, password);
 
-    return Results.Ok(response);
+    return resultOrError.Match(
+      auth => Results.Ok(AuthResponse(auth)),
+      errors => Results.Extensions.ErrorsProblem(errors)
+    );
+
+
+    SuccessfulAuthResponse AuthResponse(SuccessfulAuthResult authResult) {
+      return new SuccessfulAuthResponse(
+        authResult.Id, authResult.FirstName, authResult.LastName,
+        authResult.Email, authResult.Token
+      );
+    }
   }
 }
