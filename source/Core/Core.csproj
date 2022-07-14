@@ -20,4 +20,8 @@
     <InternalsVisibleTo Include="$(AssemblyName).Tests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ErrorOr" Version="0.1.0" />
+  </ItemGroup>
+
 </Project>
