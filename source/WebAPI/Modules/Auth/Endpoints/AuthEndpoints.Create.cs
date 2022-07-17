@@ -20,9 +20,9 @@ public static partial class AuthEndpoints {
 
     ErrorOr<SuccessfulAuthResult> resultOrError = await mediator.Send(command);
 
-    return resultOrError.MatchFirst(
+    return resultOrError.Match(
       auth => Results.Created(request.Path.ToUriComponent(), GenerateAuthResponse(auth)),
-      error => Results.Problem(error.Description, statusCode: StatusCodes.Status409Conflict)
+      errors => Results.Extensions.Errors(errors)
     );
   }
 }

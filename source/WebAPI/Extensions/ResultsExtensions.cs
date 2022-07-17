@@ -7,7 +7,7 @@ using ErrorOr;
 namespace BuberDinner.WebAPI.Extensions;
 
 public static class ResultsExtensions {
-  public static IResult ErrorsProblem(this IResultExtensions results, IEnumerable<Error> errors) {
+  public static IResult Errors(this IResultExtensions results, IEnumerable<Error> errors) {
     Error firstError = errors.First();
 
     int statusCode = firstError.Type switch {

@@ -21,7 +21,7 @@ public static partial class AuthEndpoints {
 
     return resultOrError.Match(
       auth => Results.Ok(GenerateAuthResponse(auth)),
-      errors => Results.Extensions.ErrorsProblem(errors)
+      errors => Results.Extensions.Errors(errors)
     );
   }
 }
